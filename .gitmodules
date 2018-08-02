@@ -1,0 +1,4 @@
+[submodule "tbench_c25519/c25519"]
+	path = tbench_c25519/c25519
+	url = git@github.com:ncme/c25519.git
+	branch = RIOT
