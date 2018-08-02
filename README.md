@@ -15,7 +15,7 @@ If this works you can choose to run the following suites:
 
 For example to make and run the benchmarks for tweetnacl on a 'bluepill' board:
 
-    TBENCH=0 make flash term BOARD=bluepill CPU_MODEL=stm32f103cb
+    TBENCH=1 make flash term BOARD=bluepill CPU_MODEL=stm32f103cb
 
 ## Requirements
 
