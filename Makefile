@@ -38,6 +38,7 @@ INCLUDES += -I$(CURDIR)/tbench_nanoecc/
 endif
 
 ifeq ($(TBENCH), 5)
+CFLAGS += '-DTHREAD_STACKSIZE_MAIN=(THREAD_STACKSIZE_DEFAULT + 4096)'
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_ref10/
 USEMODULE += tbench_ref10
 INCLUDES += -I$(CURDIR)/tbench_ref10/
