@@ -35,6 +35,7 @@ int main(void)
     printf("This board features a(n) %s MCU.\n", RIOT_MCU);
 
     while(1) {
+		printf("\n\nStart of a tbench cycle!\n");
         LED0_ON;
         xtimer_periodic_wakeup(&last_wakeup, ONE_SECOND);
         LED0_OFF;
@@ -45,19 +46,19 @@ int main(void)
 		else
 			printf("No benchmarks loaded!");
 
-		#ifdef TBENCH_P256
-			run_benchmark("TBENCH_P256", TBENCH, TBENCH_CYCLES, TBENCH_P256);
+		#ifdef TBENCH_DH_P256
+			run_benchmark("TBENCH_DH_P256", TBENCH, TBENCH_CYCLES, TBENCH_DH_P256);
 		#endif
-		#ifdef TBENCH_WEI25519
-			run_benchmark("TBENCH_WEI25519", TBENCH, TBENCH_CYCLES, TBENCH_WEI25519);
+		#ifdef TBENCH_DH_WEI25519
+			run_benchmark("TBENCH_DH_WEI25519", TBENCH, TBENCH_CYCLES, TBENCH_DH_WEI25519);
 		#endif
-		#ifdef TBENCH_ED25519_TO_WEI25519
-			run_benchmark("TBENCH_ED25519_TO_WEI25519",
-				TBENCH, TBENCH_CYCLES, TBENCH_ED25519_TO_WEI25519);
+		#ifdef TBENCH_DH_ED25519_TO_WEI25519
+			run_benchmark("TBENCH_DH_ED25519_TO_WEI25519",
+				TBENCH, TBENCH_CYCLES, TBENCH_DH_ED25519_TO_WEI25519);
 		#endif
-		#ifdef TBENCH_CURVE25519_TO_WEI25519
-			run_benchmark("TBENCH_CURVE25519_TO_WEI25519",
-				TBENCH, TBENCH_CYCLES, TBENCH_CURVE25519_TO_WEI25519);
+		#ifdef TBENCH_DH_CURVE25519_TO_WEI25519
+			run_benchmark("TBENCH_DH_CURVE25519_TO_WEI25519",
+				TBENCH, TBENCH_CYCLES, TBENCH_DH_CURVE25519_TO_WEI25519);
 		#endif
 		#ifdef TBENCH_DH_X25519
 			run_benchmark("TBENCH_DH_X25519 ",
@@ -99,6 +100,6 @@ int main(void)
         LED0_OFF;
 
         xtimer_periodic_wakeup(&last_wakeup, ONE_SECOND);
-		printf("\n\n");
+		printf("\nEnd of a tbench cycle!\n\n");
     }
 }
