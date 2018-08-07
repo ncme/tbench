@@ -10,8 +10,11 @@ If this works you can choose to run the following suites:
    * TBENCH=1 tweetnacl
    * TBENCH=2 c25519
    * TBENCH=3 tinyDTLS/ecc
-   * TBENCH=4 ref10
-   * TBENCH=5 relic
+   * TBENCH=4 nano-ecc
+   * TBENCH=5 ref10 (NaCl crypto-scalarmult)
+   * TBENCH=6 mj32 (SUPERCOP P256 reference impl)
+   * TBENCH=7 relic
+   * TBENCH=8 morph25519 (only conversion functions from special c25519-fork)
 
 For example to make and run the benchmarks for tweetnacl on a 'bluepill' board:
 
