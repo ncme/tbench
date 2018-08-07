@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "random.h"
-#include "cpucycles.h"
+#include "timing.h"
 #include <relic.h>
 #include <relic_test.h>
 
@@ -18,7 +18,7 @@ void print_mem(void *mem, int len) {
   printf("\n");
 }
 
-int tbench_relic_ecdh(long* acycles, int i)
+int tbench_relic_ecdh(TBENCH_ARGS)
 {
     /*  The following is an example for doing an elliptic-curve Diffie-Hellman
         key exchange.
@@ -51,7 +51,7 @@ int tbench_relic_ecdh(long* acycles, int i)
         ec_new(publicB);
 
         // START OF BENCHMARK
-        long long cycles = cpucycles();
+        START_TBENCH;
 
         /* User A generates private/public key pair */
         BENCH_ASSERT_EQUAL_INT(STS_OK, cp_ecdh_gen(privateA, publicA));
@@ -93,7 +93,7 @@ int tbench_relic_ecdh(long* acycles, int i)
         BENCH_ASSERT_EQUAL_INT(STS_OK, cp_ecdh_key(sharedKeyB, MD_LEN, privateB, publicA));
 
         // END OF BENCHMARK
-        acycles[i] = (long) (cpucycles() - cycles);
+        FINISH_TBENCH;
 
 #if (BENCH_RELIC_SHOW_OUTPUT == 1)
         printf("\nshared key computed by user B: ");

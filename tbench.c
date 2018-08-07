@@ -1,8 +1,9 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include "timing.h"
 
-static long mean(int m, long a[])
+static long mean(unsigned int m, timer_result_t a[])
 {
     long long sum=0, i;
     for(i=0; i<m; i++)
@@ -11,7 +12,7 @@ static long mean(int m, long a[])
 }
 
 
-static long median(int n, long x[])
+static long median(unsigned int n, timer_result_t x[])
 {
     float temp;
     int i, j;
@@ -31,7 +32,7 @@ static long median(int n, long x[])
     }
 }
 
-static long min(long array[], int size)
+static long min(timer_result_t array[], unsigned int size)
 {
     assert(array != NULL);
     assert(size >= 0);
@@ -42,11 +43,11 @@ static long min(long array[], int size)
     long val = 2147483647;
     for (int i = 0; i < size; i++)
         if (array[i] < val)
-            val = array[i];
+            val = (long) array[i];
     return val;
 }
 
-static long max(long array[], int size)
+static long max(timer_result_t array[], unsigned int size)
 {
     assert(array != NULL);
     assert(size >= 0);
@@ -55,13 +56,15 @@ static long max(long array[], int size)
        return -1;
 
     long val = -2147483648;
-    for (int i = 0; i < size; i++)
-        if (array[i] > val)
-            val = array[i];
+    for (int i = 0; i < size; i++) {
+        long cmp = (long) array[i];
+        if (cmp > val)
+            val = cmp;
+    }
     return val;
 }
 
-static void print_results(const char* tbench_name, long acycles[],
+static void print_results(const char* tbench_name, timer_result_t acycles[],
         const unsigned int cycle_count)
 {
 	printf("%-30s %10ld %10ld %10ld %10ld %10ld\n",
@@ -74,9 +77,9 @@ static void print_results(const char* tbench_name, long acycles[],
 }
 
 int run_benchmark(const char* tbench_name, unsigned int implementation,
-        const unsigned int cycle_count, int (*tbench_func)(long*, int))
+        const unsigned int cycle_count, int (*tbench_func)(TBENCH_ARGS))
 {
-	long acycles[cycle_count]; unsigned int i;
+	timer_result_t acycles[cycle_count]; unsigned int i;
 
 	for(i = 0; i < cycle_count; i++) {
 		if(!tbench_func(acycles, i)) {

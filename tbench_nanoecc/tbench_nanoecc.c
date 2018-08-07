@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "random.h"
 #include "nanoecc.h"
-#include "cpucycles.h"
+#include "timing.h"
 #include "morph25519.h"
 
 void vli_print(uint8_t *p_vli, unsigned int p_size)
@@ -28,7 +28,7 @@ int tbench_dh_P256(long acycles[], int i){
 	random_bytes(l_random2, NUM_ECC_DIGITS);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	ecc_make_key(&l_Q1, l_secret1, l_secret1);
 	ecc_make_key(&l_Q2, l_secret2, l_secret2);
@@ -47,7 +47,7 @@ int tbench_dh_P256(long acycles[], int i){
 	}
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	if (memcmp(l_shared1, l_shared2, NUM_ECC_DIGITS) != 0)
 	{
@@ -87,7 +87,7 @@ int nanoeccDhMtToWeiTest(long acycles[], int i){
 	random_bytes(l_random2, NUM_ECC_DIGITS);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	ecc_make_key(&l_Q1, l_secret1, l_secret1);
 	ecc_make_key(&l_Q2, l_secret2, l_secret2);
@@ -116,7 +116,7 @@ int nanoeccDhMtToWeiTest(long acycles[], int i){
 	morph25519_w2m(sx2, UNUSED, l_shared2, IGNORED);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	if (memcmp(l_shared1, l_shared2, NUM_ECC_DIGITS) != 0)
 	{

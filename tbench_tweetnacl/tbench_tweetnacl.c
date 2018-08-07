@@ -4,7 +4,7 @@
 #include <random.h>
 #include "tweetnacl.h"
 #include "morph25519.h"
-#include "../cpucycles.h"
+#include "timing.h"
 
 typedef unsigned char u8;
 
@@ -51,7 +51,7 @@ void ecc_native2bytes(u8 *p_native)
 	p_native = p_bytes;
 }
 
-int tbench_tweetnacl_x25519(long* acycles, int i) {
+int tbench_tweetnacl_x25519(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 shak1[PUB_KEY_LEN],  shak2[PUB_KEY_LEN];
@@ -61,7 +61,7 @@ int tbench_tweetnacl_x25519(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_curve25519_base(pubk1, prik1);
@@ -73,14 +73,14 @@ int tbench_tweetnacl_x25519(long* acycles, int i) {
 	crypto_scalarmult(shak2, prik2, pubk1);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(shak1, shak2);
 
 	return 0 == crypto_verify_32(shak1, shak2);
 }
 
-int tbench_tweetnacl_wei_to_mt(long* acycles, int i) {
+int tbench_tweetnacl_wei_to_mt(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 pbwx1[PUB_KEY_LEN],  pbwx2[PUB_KEY_LEN];
@@ -96,7 +96,7 @@ int tbench_tweetnacl_wei_to_mt(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_curve25519_base(pubk1, prik1);
@@ -116,7 +116,7 @@ int tbench_tweetnacl_wei_to_mt(long* acycles, int i) {
 	morph25519_m2w(shwx2, shwy2, shak2, IGNORED);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(shak1, shak2);
 	EQUAL(pubk1, pbmx1);
@@ -129,7 +129,7 @@ int tbench_tweetnacl_wei_to_mt(long* acycles, int i) {
 
 #define PARITY_BIT 0
 
-int tbench_tweetnacl_ed_to_mt(long* acycles, int i) {
+int tbench_tweetnacl_ed_to_mt(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 pbwx1[PUB_KEY_LEN],  pbwx2[PUB_KEY_LEN];
@@ -144,7 +144,7 @@ int tbench_tweetnacl_ed_to_mt(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_curve25519_base(pubk1, prik1);
@@ -164,7 +164,7 @@ int tbench_tweetnacl_ed_to_mt(long* acycles, int i) {
 	morph25519_m2e(shwx2, shwy2, shak2, PARITY_BIT);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(shak1, shak2);
 	EQUAL(pubk1, pbmx1);

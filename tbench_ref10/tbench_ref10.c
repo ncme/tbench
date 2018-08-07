@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "random.h"
-#include "cpucycles.h"
+#include "timing.h"
 #include "x25519_ref10.c"
 #include "scalarmult_ed25519_ref10.c"
 #include "crypto_verify_32.c"
@@ -13,7 +13,7 @@ typedef unsigned char u8;
 #define PUB_KEY_LEN 32
 #define PRIV_KEY_LEN 32
 
-int tbench_ref10x25519(long* acycles, int i) {
+int tbench_ref10x25519(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 shak1[PUB_KEY_LEN],  shak2[PUB_KEY_LEN];
@@ -23,7 +23,7 @@ int tbench_ref10x25519(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_curve25519_ref10_base(pubk1, prik1);
@@ -34,12 +34,12 @@ int tbench_ref10x25519(long* acycles, int i) {
 	crypto_scalarmult_curve25519_ref10(shak2, pubk1, prik2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return crypto_verify_32(shak1, shak2);
 }
 
-int tbench_ref10ed25519(long* acycles, int i) {
+int tbench_ref10ed25519(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 shak1[PUB_KEY_LEN],  shak2[PUB_KEY_LEN];
@@ -49,7 +49,7 @@ int tbench_ref10ed25519(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_ed25519_base(pubk1, prik1);
@@ -61,12 +61,12 @@ int tbench_ref10ed25519(long* acycles, int i) {
 	crypto_scalarmult_ed25519(shak2, pubk1, prik2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return crypto_verify_32(shak1, shak2);
 }
 
-int tbench_ref10_wei_to_x25519(long* acycles, int i) {
+int tbench_ref10_wei_to_x25519(TBENCH_ARGS) {
 	u8 prik1[PRIV_KEY_LEN], prik2[PRIV_KEY_LEN];
 	u8 pubk1[PUB_KEY_LEN],  pubk2[PUB_KEY_LEN];
 	u8 shak1[PUB_KEY_LEN],  shak2[PUB_KEY_LEN];
@@ -80,7 +80,7 @@ int tbench_ref10_wei_to_x25519(long* acycles, int i) {
 	random_bytes(prik2, PRIV_KEY_LEN);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	crypto_scalarmult_curve25519_ref10_base(pubk1, prik1);
@@ -95,7 +95,7 @@ int tbench_ref10_wei_to_x25519(long* acycles, int i) {
 	crypto_scalarmult_curve25519_ref10(shak2, dhk1, prik2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return crypto_verify_32(shak1, shak2);
 }

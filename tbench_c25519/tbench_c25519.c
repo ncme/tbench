@@ -13,7 +13,7 @@
 #include <ed25519.h>
 #include <morph25519.h>
 #include "edsign.h"
-#include "cpucycles.h"
+#include "timing.h"
 
 
 #define PARITY_BIT 0
@@ -33,7 +33,7 @@ static void print_point(const uint8_t *x, const uint8_t *y)
 	printf("\n");
 }
 
-int tbench_dh_mt(long* acycles, int i)
+int tbench_dh_mt(TBENCH_ARGS)
 {
 	uint8_t e1[C25519_EXPONENT_SIZE];
 	uint8_t e2[C25519_EXPONENT_SIZE];
@@ -49,7 +49,7 @@ int tbench_dh_mt(long* acycles, int i)
 	c25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	c25519_smult(q1, c25519_base_x, e1);
@@ -60,12 +60,12 @@ int tbench_dh_mt(long* acycles, int i)
 	c25519_smult(r2, q1, e2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return f25519_eq(r1, r2);
 }
 
-int tbench_dh_ed(long* acycles, int i)
+int tbench_dh_ed(TBENCH_ARGS)
 {
 	uint8_t e1[C25519_EXPONENT_SIZE];
 	uint8_t e2[C25519_EXPONENT_SIZE];
@@ -82,7 +82,7 @@ int tbench_dh_ed(long* acycles, int i)
 	c25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	ed25519_smult(&q1, &ed25519_base, e1);
@@ -96,12 +96,12 @@ int tbench_dh_ed(long* acycles, int i)
 	ed25519_unproject(x2, y2, &r2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return f25519_eq(x1, x2) && f25519_eq(y1, y2);
 }
 
-int tbench_dh_mt_to_ed(long* acycles, int i)
+int tbench_dh_mt_to_ed(TBENCH_ARGS)
 {
 	uint8_t e1[ED25519_EXPONENT_SIZE];
 	uint8_t e2[ED25519_EXPONENT_SIZE];
@@ -119,7 +119,7 @@ int tbench_dh_mt_to_ed(long* acycles, int i)
 	ed25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	ed25519_smult(&q1, &ed25519_base, e1);
@@ -143,7 +143,7 @@ int tbench_dh_mt_to_ed(long* acycles, int i)
 	ed25519_unproject(x1, y1, &r1);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(mx1, ex1);
 	EQUAL(my1, ey1);
@@ -154,7 +154,7 @@ int tbench_dh_mt_to_ed(long* acycles, int i)
 	return 1;
 }
 
-int tbench_dh_ed_to_mt(long* acycles, int i)
+int tbench_dh_ed_to_mt(TBENCH_ARGS)
 {
 	uint8_t e1[C25519_EXPONENT_SIZE];
 	uint8_t e2[C25519_EXPONENT_SIZE];
@@ -172,7 +172,7 @@ int tbench_dh_ed_to_mt(long* acycles, int i)
 	ed25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	c25519_smult(q1, c25519_base_x, m1);
@@ -192,12 +192,12 @@ int tbench_dh_ed_to_mt(long* acycles, int i)
 	morph25519_m2e(mx2, my2, r2, PARITY_BIT);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return f25519_eq(r1, r2) && f25519_eq(mx1, mx2) && f25519_eq(my1, my2);
 }
 
-int tbench_dh_wei_to_ed(long* acycles, int i)
+int tbench_dh_wei_to_ed(TBENCH_ARGS)
 {
 	uint8_t e1[ED25519_EXPONENT_SIZE];
 	uint8_t e2[ED25519_EXPONENT_SIZE];
@@ -215,7 +215,7 @@ int tbench_dh_wei_to_ed(long* acycles, int i)
 	ed25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	ed25519_smult(&q1, &ed25519_base, e1);
@@ -240,7 +240,7 @@ int tbench_dh_wei_to_ed(long* acycles, int i)
 	ed25519_unproject(x1, y1, &r1);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(dhx1, ex1);
 	EQUAL(dhy1, ey1);
@@ -251,7 +251,7 @@ int tbench_dh_wei_to_ed(long* acycles, int i)
 	return 1;
 }
 
-int tbench_dh_wei_to_mt(long* acycles, int i)
+int tbench_dh_wei_to_mt(TBENCH_ARGS)
 {
 	uint8_t e1[C25519_EXPONENT_SIZE];
 	uint8_t e2[C25519_EXPONENT_SIZE];
@@ -269,7 +269,7 @@ int tbench_dh_wei_to_mt(long* acycles, int i)
 	c25519_prepare(e2);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	/* Create public keys */
 	c25519_smult(m1, c25519_base_x, e1);
@@ -287,7 +287,7 @@ int tbench_dh_wei_to_mt(long* acycles, int i)
 	morph25519_m2w(mx2, my2, r2, IGNORED);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	EQUAL(m1, qm1);
 	EQUAL(m2, qm2);
@@ -302,7 +302,7 @@ int tbench_dh_wei_to_mt(long* acycles, int i)
 #define EDSIGN_SIGNATURE_SIZE 64
 #define EDSIGN_SECRET_KEY_SIZE 32
 
-int tbench_eddsa_sign(long* acycles, int i)
+int tbench_eddsa_sign(TBENCH_ARGS)
 {
 	uint8_t pub[EDSIGN_PUBLIC_KEY_SIZE];
 	uint8_t msg[MAX_MSG_SIZE];
@@ -313,16 +313,16 @@ int tbench_eddsa_sign(long* acycles, int i)
 	random_bytes(msg, MAX_MSG_SIZE);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 	edsign_sec_to_pub(pub, secret);
 	edsign_sign(signature, pub, secret, msg, MAX_MSG_SIZE);
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	return edsign_verify(signature, pub, msg, MAX_MSG_SIZE);
 }
 
-int tbench_eddsa_verify(long* acycles, int i)
+int tbench_eddsa_verify(TBENCH_ARGS)
 {
 	uint8_t pub[EDSIGN_PUBLIC_KEY_SIZE];
 	uint8_t msg[MAX_MSG_SIZE];
@@ -336,10 +336,10 @@ int tbench_eddsa_verify(long* acycles, int i)
 	edsign_sign(signature, pub, secret, msg, MAX_MSG_SIZE);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 	int ret = 1;
 	ret = edsign_verify(signature, pub, msg, MAX_MSG_SIZE);
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 	return ret;
 }

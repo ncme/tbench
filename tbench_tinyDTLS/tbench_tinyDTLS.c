@@ -6,7 +6,7 @@
 #include "ecc.h"
 #include "test_helper.h"
 #include "convert.h"
-#include "cpucycles.h"
+#include "timing.h"
 
 static int isSameDebug(const uint32_t *A, const uint32_t *B, uint8_t length){
 	if(0 != memcmp(A, B, length * sizeof(uint32_t)))  {
@@ -44,7 +44,7 @@ int tbench_dh_P256(long acycles[], int i){
 	ecc_setRandom(secretB);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	ecc_ec_mult(BasePointx, BasePointy, secretA, tempx, tempy);
 	ecc_ec_mult(BasePointx, BasePointy, secretB, tempBx1, tempBy1);
@@ -53,7 +53,7 @@ int tbench_dh_P256(long acycles[], int i){
 	ecc_ec_mult(tempx, tempy, secretB, tempBx2, tempBy2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	// Sanity check
 	assert(ecc_isSame(tempAx2, tempBx2, arrayLength));
@@ -81,7 +81,7 @@ int tbench_dh_Wei(long acycles[], int i){
 	ecc_setRandom(secretB);
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	ecc_ec_mult(wei25519_Gx, wei25519_Gy, secretA, tempx, tempy);
 	ecc_ec_mult(wei25519_Gx, wei25519_Gy, secretB, tempBx1, tempBy1);
@@ -90,7 +90,7 @@ int tbench_dh_Wei(long acycles[], int i){
 	ecc_ec_mult(tempx, tempy, secretB, tempBx2, tempBy2);
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	// Sanity check
 	assert(ecc_isSame(tempAx2, tempBx2, arrayLength));
@@ -125,7 +125,7 @@ int tbench_dh_Ed(long acycles[], int i){
 	uint32_t BasePointy[8];
 
 	// START OF BENCHMARK
-	long long cycles = cpucycles();
+	START_TBENCH;
 
 	twisted_edwards_to_short_weierstrass(ed25519_Gx, ed25519_Gy, BasePointx, BasePointy);
 
@@ -142,7 +142,7 @@ int tbench_dh_Ed(long acycles[], int i){
 	ecc_ec_mult(tempx, tempy, secretB, tempBx2, tempBy2); // Bob: (x_k, y_k) = d_B * Q_A
 
 	// END OF BENCHMARK
-	acycles[i] = (long) (cpucycles() - cycles);
+	FINISH_TBENCH;
 
 	// Sanity Check
 	isSameDebug(tempAx2, tempBx2, arrayLength);
