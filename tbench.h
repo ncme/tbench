@@ -13,6 +13,7 @@
 #define REF10		5
 #define MJ32		6
 #define RELIC		7
+#define MORPH25519	8
 
 #define RUN_BENCH 1
 
@@ -20,8 +21,7 @@
 	#include "tbench_tweetnacl.h"
 	#define IMPL "tweetnacl"
 #elif TBENCH == C25519
-	//#include "tbench_c25519.h"
-	#include "tbench_morph25519.h"
+	#include "tbench_c25519.h"
 	#define IMPL "C25519"
 #elif TBENCH == TINYDTLS
 	#include "tbench_tinyDTLS.h"
@@ -38,6 +38,9 @@
 #elif TBENCH == RELIC
 	#include "tbench_relic.h"
 	#define IMPL "Relic"
+#elif TBENCH == MORPH25519
+	#include "tbench_morph25519.h"
+	#define IMPL "MORPH25519"
 #else
 	#undef RUN_BENCH
 	#define RUN_BENCH 0

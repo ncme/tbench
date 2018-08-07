@@ -41,8 +41,8 @@ int main(void)
         LED0_OFF;
 
 		if(RUN_BENCH)
-			printf("IMPL %d (%03d iterations)\t\t     Last\tMean\t  Median      Min\t Max\n",
-					TBENCH, TBENCH_CYCLES);
+			printf("IMPL %-12s (%03d iterations)   Last\tMean\t  Median      Min\t Max\n",
+					IMPL, TBENCH_CYCLES);
 		else
 			printf("No benchmarks loaded!");
 
@@ -91,6 +91,30 @@ int main(void)
 		#ifdef TBENCH_EDDSA_ED25519_VERIFY
 			run_benchmark("TBENCH_EDDSA_ED25519_VERIFY",
 				TBENCH, TBENCH_CYCLES, TBENCH_EDDSA_ED25519_VERIFY);
+		#endif
+		#ifdef TBENCH_CONV_W2M
+			run_benchmark("TBENCH_CONV_W2M",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_W2M);
+		#endif
+		#ifdef TBENCH_CONV_W2E
+			run_benchmark("TBENCH_CONV_W2E",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_W2E);
+		#endif
+		#ifdef TBENCH_CONV_M2W
+			run_benchmark("TBENCH_CONV_M2W",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_M2W);
+		#endif
+		#ifdef TBENCH_CONV_M2E
+			run_benchmark("TBENCH_CONV_M2E",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_M2E);
+		#endif
+		#ifdef TBENCH_CONV_E2W
+			run_benchmark("TBENCH_CONV_E2W",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_E2W);
+		#endif
+		#ifdef TBENCH_CONV_E2M
+			run_benchmark("TBENCH_CONV_E2M",
+				TBENCH, TBENCH_CYCLES, TBENCH_CONV_E2M);
 		#endif
 
 		for(int i = 0; i < 20; i++) {
