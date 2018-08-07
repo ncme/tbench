@@ -12,7 +12,7 @@ INCLUDES += -I$(CURDIR)/tbench_c25519/c25519/src/
 ifeq ($(TBENCH), 1)
 CFLAGS += '-DTHREAD_STACKSIZE_MAIN=(THREAD_STACKSIZE_DEFAULT + 2048)'
 USEPKG += tweetnacl
-INCLUDES += -I$(RIOTPKG)/tweetnacl
+INCLUDES += -I$(RIOTPKG)/tweetnacl/
 
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_tweetnacl/
 USEMODULE += tbench_tweetnacl
@@ -95,6 +95,3 @@ DEVELHELP ?= 1
 FEATURES_REQUIRED += periph_timer
 
 include $(RIOTBASE)/Makefile.include
-
-
-
