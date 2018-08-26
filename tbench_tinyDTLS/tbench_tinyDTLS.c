@@ -19,7 +19,7 @@ static int isSameDebug(const uint32_t *A, const uint32_t *B, uint8_t length){
 	return !memcmp(A, B, length * sizeof(uint32_t));
 }
 
-int tbench_dh_P256(long acycles[], int i){
+int tbench_dh_P256(TBENCH_ARGS){
 	ecc_ec_init(SECP256R1);
 	//These are testvalues taken from the NIST P-256 definition
 	//6b17d1f2 e12c4247 f8bce6e5 63a440f2 77037d81 2deb33a0 f4a13945 d898c296
@@ -62,7 +62,7 @@ int tbench_dh_P256(long acycles[], int i){
 	return 1;
 }
 
-int tbench_dh_Wei(long acycles[], int i){
+int tbench_dh_Wei(TBENCH_ARGS){
 	ecc_ec_init(WEI25519);
 
 	static const uint32_t wei25519_Gx[8] = {0xaaad245a, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0x2aaaaaaa};
@@ -99,7 +99,7 @@ int tbench_dh_Wei(long acycles[], int i){
 	return 1;
 }
 
-int tbench_dh_Ed(long acycles[], int i){
+int tbench_dh_Ed(TBENCH_ARGS){
 	ecc_ec_init(WEI25519);
 	static const uint32_t ed25519_Gx[8] = {0x8f25d51a, 0xc9562d60, 0x9525a7b2, 0x692cc760, 0xfdd6dc5c, 0xc0a4e231, 0xcd6e53fe, 0x216936d3};
 	static const uint32_t ed25519_Gy[8] = {0x66666658, 0x66666666, 0x66666666, 0x66666666, 0x66666666, 0x66666666, 0x66666666, 0x66666666};

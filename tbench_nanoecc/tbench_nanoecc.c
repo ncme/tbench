@@ -15,7 +15,7 @@ void vli_print(uint8_t *p_vli, unsigned int p_size)
     }
 }
 
-int tbench_dh_P256(long acycles[], int i){
+int tbench_dh_P256(TBENCH_ARGS){
     EccPoint l_Q1, l_Q2; /* public keys */
     uint8_t l_secret1[NUM_ECC_DIGITS], l_secret2[NUM_ECC_DIGITS];
     uint8_t l_shared1[NUM_ECC_DIGITS], l_shared2[NUM_ECC_DIGITS];
@@ -69,7 +69,7 @@ int tbench_dh_P256(long acycles[], int i){
     return 1;
 }
 
-int nanoeccDhMtToWeiTest(long acycles[], int i){
+int nanoeccDhMtToWeiTest(TBENCH_ARGS){
     EccPoint l_Q1, l_Q2, l_P1, l_P2; /* public keys */
     uint8_t l_secret1[NUM_ECC_DIGITS], l_secret2[NUM_ECC_DIGITS];
     uint8_t l_shared1[NUM_ECC_DIGITS], l_shared2[NUM_ECC_DIGITS];

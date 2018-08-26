@@ -174,3 +174,49 @@ int tbench_tweetnacl_ed_to_mt(TBENCH_ARGS) {
 
 	return 0 == crypto_verify_32(shak1, shak2);
 }
+
+int tbench_tweetnacl_sign(TBENCH_ARGS) {
+	u8 sk[crypto_sign_ed25519_tweet_SECRETKEYBYTES];
+	u8 pk[crypto_sign_ed25519_tweet_PUBLICKEYBYTES];
+	unsigned long long mlen = crypto_sign_ed25519_tweet_BYTES;
+	u8 msg[2 * crypto_sign_ed25519_tweet_BYTES] = {0};
+	unsigned long long smlen = 0;
+	u8 sm[2 * crypto_sign_ed25519_tweet_BYTES] = {0};
+
+	random_bytes(msg, mlen);
+
+	// START OF BENCHMARK
+	START_TBENCH;
+
+	crypto_sign_ed25519_tweet_keypair(pk, sk);
+	crypto_sign_ed25519_tweet(sm, &smlen, msg, mlen, sk);
+
+	// END OF BENCHMARK
+	FINISH_TBENCH;
+
+	return 0 == crypto_sign_ed25519_tweet_open(msg, &mlen, sm, smlen, pk);
+}
+
+int tbench_tweetnacl_verify(TBENCH_ARGS) {
+	u8 sk[crypto_sign_ed25519_tweet_SECRETKEYBYTES];
+	u8 pk[crypto_sign_ed25519_tweet_PUBLICKEYBYTES];
+	unsigned long long mlen = crypto_sign_ed25519_tweet_BYTES;
+	u8 msg[2 * crypto_sign_ed25519_tweet_BYTES] = {0};
+	unsigned long long smlen = 0;
+	u8 sm[2 * crypto_sign_ed25519_tweet_BYTES] = {0};
+	int ret;
+
+	random_bytes(msg, mlen);
+	crypto_sign_ed25519_tweet_keypair(pk, sk);
+	crypto_sign_ed25519_tweet(sm, &smlen, msg, mlen, sk);
+
+	// START OF BENCHMARK
+	START_TBENCH;
+
+	ret = crypto_sign_ed25519_tweet_open(msg, &mlen, sm, smlen, pk);
+
+	// END OF BENCHMARK
+	FINISH_TBENCH;
+
+	return 0 == ret;
+}

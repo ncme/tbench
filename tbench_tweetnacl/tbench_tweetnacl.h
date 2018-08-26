@@ -1,7 +1,11 @@
 #define TBENCH_DH_X25519 tbench_tweetnacl_x25519
 #define TBENCH_DH_WEI25519_1_TO_X25519 tbench_tweetnacl_wei_to_mt
 #define TBENCH_DH_ED25519_TO_X25519 tbench_tweetnacl_ed_to_mt
+//#define TBENCH_EDDSA_ED25519_SIGN tbench_tweetnacl_sign
+//#define TBENCH_EDDSA_ED25519_VERIFY tbench_tweetnacl_verify
 
 int tbench_tweetnacl_x25519(TBENCH_ARGS);
 int tbench_tweetnacl_wei_to_mt(TBENCH_ARGS);
 int tbench_tweetnacl_ed_to_mt(TBENCH_ARGS);
+int tbench_tweetnacl_sign(TBENCH_ARGS);
+int tbench_tweetnacl_verify(TBENCH_ARGS);

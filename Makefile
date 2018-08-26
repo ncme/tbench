@@ -12,7 +12,7 @@ INCLUDES += -I$(CURDIR)/tbench_c25519/c25519/src/
 ifeq ($(TBENCH), 1)
 CFLAGS += '-DTHREAD_STACKSIZE_MAIN=(THREAD_STACKSIZE_DEFAULT + 2048)'
 USEPKG += tweetnacl
-INCLUDES += -I$(RIOTPKG)/tweetnacl/
+INCLUDE += -I$(RIOTPKG)/tweetnacl/
 
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_tweetnacl/
 USEMODULE += tbench_tweetnacl
@@ -20,6 +20,7 @@ INCLUDES += -I$(CURDIR)/tbench_tweetnacl/
 endif
 
 ifeq ($(TBENCH), 2)
+CFLAGS += '-DTHREAD_STACKSIZE_MAIN=(THREAD_STACKSIZE_DEFAULT + 2048)'
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_c25519/
 USEMODULE += tbench_c25519
 INCLUDES += -I$(CURDIR)/tbench_c25519/
@@ -80,6 +81,12 @@ export RELIC_CONFIG_FLAGS
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_relic/
 USEMODULE += tbench_relic
 INCLUDES += -I$(CURDIR)/tbench_relic/
+endif
+
+ifeq ($(TBENCH), 8)
+EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_c25519/
+USEMODULE += tbench_c25519
+INCLUDES += -I$(CURDIR)/tbench_c25519/
 endif
 
 ifndef TBENCH
