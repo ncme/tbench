@@ -508,7 +508,7 @@ static void ec_double(const uint32_t *px, const uint32_t *py, uint32_t *Dx, uint
 	tempA[0] = 0x00000003;							// A = 3
 	fieldMult(tempC, tempA, tempD, arrayLength);	// D = 3x^2
 	fieldModP(tempC, tempD);			   			// C = 3x^2 mod p
-	fieldSub(tempC, ecc_param_a, ecc_prime_m, tempA);//A = 3x^2 mod p + a
+	fieldSub(tempC, ecc_param_a, ecc_prime_m, tempA);//A = 3x^2 mod p - (-a)
 	fieldAdd(py, py, ecc_prime_r, tempB); 			// B = 2y
 	fieldInv(tempB, ecc_prime_m, ecc_prime_r, tempC);//C = (2y)^-1
 	fieldMult(tempA, tempC, tempD, arrayLength);	// D = (3x^2 + a) mod p * (2y)^-1
@@ -572,61 +572,6 @@ static void ec_add(const uint32_t *px, const uint32_t *py, const uint32_t *qx, c
 	fieldSub(tempC, qy, ecc_prime_m, Sy);
 }
 
-/*
-  R0 ← 0
-  R1 ← P
-  for i from m downto 0 do
-	 if di = 1 then
-		R0 ← point_add(R0, R1)
-		R1 ← point_double(R1)
-	 else
-		R1 ← point_add(R0, R1)
-		R0 ← point_double(R0)
-
-  return R0
-*/
-#define TestBit(A,k)    ( A[(k/32)] & (1 << (k%32)) )
-
-void ecc_ec_mult2(const uint32_t *px, const uint32_t *py, const uint32_t *secret, uint32_t *resultx, uint32_t *resulty){
-	uint32_t R0x[8];
-	uint32_t R0y[8];
-	uint32_t R1x[8];
-	uint32_t R1y[8];
-	uint32_t tempx[8];
-	uint32_t tempy[8];
-	copy(px, R0x, arrayLength);
-	copy(py, R0y, arrayLength);
-	ec_double(R0x, R0y, tempx, tempy);
-	copy(tempx, R1x, arrayLength);
-	copy(tempy, R1y, arrayLength);
-	int i;
-	for(i=256-2; i>=0; i--) {
-		if (TestBit(secret,i)) {
-			ec_add(R0x, R0y, R1x, R1y, tempx, tempy);
-			copy(tempx, R0x, arrayLength);
-			copy(tempy, R0y, arrayLength);
-			ec_double(R1x, R1y, tempx, tempy);
-			copy(tempx, R1x, arrayLength);
-			copy(tempy, R1y, arrayLength);
-		} else {
-			ec_add(R0x, R0y, R1x, R1y, tempx, tempy);
-			copy(tempx, R1x, arrayLength);
-			copy(tempy, R1y, arrayLength);
-			ec_double(R0x, R0y, tempx, tempy);
-			copy(tempx, R0x, arrayLength);
-			copy(tempy, R0y, arrayLength);
-		}
-	}
-	copy(R0x, resultx, arrayLength);
-	copy(R0y, resulty, arrayLength);
-	//verify_ap_mult(px, py, secret, resultx, resulty);
-}
-
-
-/*
- * ECC Point Multiplication using Double_And_Add (generic)
- * -> more efficient algorithms exist (ref refined karatsuba, sliding window) - some with curve specific optimizations
- */
 void ecc_ec_mult(const uint32_t *px, const uint32_t *py, const uint32_t *secret, uint32_t *resultx, uint32_t *resulty){
 	uint32_t Qx[8];
 	uint32_t Qy[8];

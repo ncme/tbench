@@ -12,7 +12,7 @@ INCLUDES += -I$(CURDIR)/tbench_c25519/c25519/src/
 ifeq ($(TBENCH), 1)
 CFLAGS += '-DTHREAD_STACKSIZE_MAIN=(THREAD_STACKSIZE_DEFAULT + 2048)'
 USEPKG += tweetnacl
-INCLUDE += -I$(RIOTPKG)/tweetnacl/
+INCLUDE += $(RIOTPKG)/tweetnacl/
 
 EXTERNAL_MODULE_DIRS += $(CURDIR)/tbench_tweetnacl/
 USEMODULE += tbench_tweetnacl
@@ -99,7 +99,7 @@ endif
 
 QUIET ?= 1
 WERROR = 0
-VALGRIND_FLAGS += --tool=massif --stacks=yes #--time-unit=ms --detailed-freq=1
+VALGRIND_FLAGS += --tool=massif --stacks=yes --time-unit=ms #--detailed-freq=1
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the

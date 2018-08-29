@@ -56,8 +56,8 @@ int tbench_dh_P256(TBENCH_ARGS){
 	FINISH_TBENCH;
 
 	// Sanity check
-	assert(ecc_isSame(tempAx2, tempBx2, arrayLength));
-	assert(ecc_isSame(tempAy2, tempBy2, arrayLength));
+	assert(isSameDebug(tempAx2, tempBx2, arrayLength));
+	assert(isSameDebug(tempAy2, tempBy2, arrayLength));
 
 	return 1;
 }
@@ -123,11 +123,10 @@ int tbench_dh_Ed(TBENCH_ARGS){
 
 	uint32_t BasePointx[8];
 	uint32_t BasePointy[8];
+	twisted_edwards_to_short_weierstrass(ed25519_Gx, ed25519_Gy, BasePointx, BasePointy);
 
 	// START OF BENCHMARK
 	START_TBENCH;
-
-	twisted_edwards_to_short_weierstrass(ed25519_Gx, ed25519_Gy, BasePointx, BasePointy);
 
 	ecc_ec_mult(BasePointx, BasePointy, secretA, tempx, tempy); 	// Alice: Q_A
 	ecc_ec_mult(BasePointx, BasePointy, secretB, tempBx1, tempBy1); // Bob: Q_B
@@ -141,12 +140,63 @@ int tbench_dh_Ed(TBENCH_ARGS){
 	ecc_ec_mult(tempBx1, tempBy1, secretA, tempAx2, tempAy2); // Alice: (x_k,y_k) = d_A * Q_B
 	ecc_ec_mult(tempx, tempy, secretB, tempBx2, tempBy2); // Bob: (x_k, y_k) = d_B * Q_A
 
+	short_weierstrass_to_twisted_edwards(tempx, tempy, ed25519_QAx, ed25519_QAy);
+	short_weierstrass_to_twisted_edwards(tempBx1, tempBy1, ed25519_QBx, ed25519_QBy);
+
 	// END OF BENCHMARK
 	FINISH_TBENCH;
 
 	// Sanity Check
 	isSameDebug(tempAx2, tempBx2, arrayLength);
 	isSameDebug(tempAy2, tempBy2, arrayLength);
+
+	return 1;
+}
+
+int tbench_dh_Mt(TBENCH_ARGS){
+	ecc_ec_init(WEI25519);
+
+	uint32_t tempx[8];
+	uint32_t tempy[8];
+	uint32_t tempAx2[8];
+	uint32_t tempAy2[8];
+	uint32_t tempBx1[8];
+	uint32_t tempBy1[8];
+	uint32_t tempBx2[8];
+	uint32_t tempBy2[8];
+	uint32_t secretA[8];
+	uint32_t secretB[8];
+	uint32_t ed25519_QAx[8];
+	uint32_t ed25519_QAy[8];
+	uint32_t ed25519_QBx[8];
+	uint32_t ed25519_QBy[8];
+
+	ecc_setRandom(secretA); // Alice: d_A
+	ecc_setRandom(secretB); // Bob: d_B
+
+	// START OF BENCHMARK
+	START_TBENCH;
+	ecc_ec_mult(ecc_g_point_x, ecc_g_point_y, secretA, tempx, tempy); 	// Alice: Q_A
+	ecc_ec_mult(ecc_g_point_x, ecc_g_point_y, secretB, tempBx1, tempBy1); // Bob: Q_B
+
+	short_weierstrass_to_montgomery(tempx, tempy, ed25519_QAx, ed25519_QAy);
+	short_weierstrass_to_montgomery(tempBx1, tempBy1, ed25519_QBx, ed25519_QBy);
+
+	montgomery_to_short_weierstrass(ed25519_QAx, ed25519_QAy, tempx, tempy);
+	montgomery_to_short_weierstrass(ed25519_QBx, ed25519_QBy, tempBx1, tempBy1);
+
+	ecc_ec_mult(tempBx1, tempBy1, secretA, tempAx2, tempAy2); // Alice: (x_k,y_k) = d_A * Q_B
+	ecc_ec_mult(tempx, tempy, secretB, tempBx2, tempBy2); // Bob: (x_k, y_k) = d_B * Q_A
+
+	short_weierstrass_to_montgomery(tempx, tempy, ed25519_QAx, ed25519_QAy);
+	short_weierstrass_to_montgomery(tempBx1, tempBy1, ed25519_QBx, ed25519_QBy);
+
+	// END OF BENCHMARK
+	FINISH_TBENCH;
+
+	// Sanity Check
+	isSameDebug(ed25519_QAx, ed25519_QBx, arrayLength);
+	isSameDebug(ed25519_QAy, ed25519_QBy, arrayLength);
 
 	return 1;
 }

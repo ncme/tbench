@@ -149,19 +149,19 @@ int tbench_tweetnacl_ed_to_mt(TBENCH_ARGS) {
 	/* Create public keys */
 	crypto_scalarmult_curve25519_base(pubk1, prik1);
 	crypto_scalarmult_curve25519_base(pubk2, prik2);
-	morph25519_m2e(pbwx1, pbwy1, pubk1, PARITY_BIT);
-	morph25519_m2e(pbwx2, pbwy2, pubk2, PARITY_BIT);
+	morph25519_mx2e(pbwx1, pbwy1, pubk1, PARITY_BIT);
+	morph25519_mx2e(pbwx2, pbwy2, pubk2, PARITY_BIT);
 
 	/* Diffie-Hellman exchange */
 
-	morph25519_e2m(pbmx1, pbwy1);
-	morph25519_e2m(pbmx2, pbwy2);
+	morph25519_ey2mx(pbmx1, pbwy1);
+	morph25519_ey2mx(pbmx2, pbwy2);
 
 	crypto_scalarmult(shak1, prik1, pubk2);
 	crypto_scalarmult(shak2, prik2, pubk1);
 
-	morph25519_m2e(shwx1, shwy1, shak1, PARITY_BIT);
-	morph25519_m2e(shwx2, shwy2, shak2, PARITY_BIT);
+	morph25519_mx2e(shwx1, shwy1, shak1, PARITY_BIT);
+	morph25519_mx2e(shwx2, shwy2, shak2, PARITY_BIT);
 
 	// END OF BENCHMARK
 	FINISH_TBENCH;
