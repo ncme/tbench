@@ -99,7 +99,9 @@ endif
 
 QUIET ?= 1
 WERROR = 0
-VALGRIND_FLAGS += --tool=massif --stacks=yes --time-unit=ms #--detailed-freq=1
+CFLAGS += '-w' # disable compiler warnings for benchmarking
+
+VALGRIND_FLAGS += --tool=massif --stacks=yes --time-unit=ms
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
