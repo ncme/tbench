@@ -197,7 +197,7 @@ int tbench_dh_ed_to_mt(TBENCH_ARGS)
 	uint8_t r1[F25519_SIZE];
 	uint8_t r2[F25519_SIZE];
 
-	uint8_t m1[32], m2[32], ex1[32], ex2[32], ey1[32], ey2[32], qm1[32], qm2[32], mx1[32], mx2[32], my1[32], my2[32];
+	uint8_t ex1[32], ex2[32], ey1[32], ey2[32], qm1[32], qm2[32], mx1[32], mx2[32], my1[32], my2[32];
 
 	/* Create private keys */
 	random_bytes(e1, C25519_EXPONENT_SIZE);
@@ -209,8 +209,8 @@ int tbench_dh_ed_to_mt(TBENCH_ARGS)
 	START_TBENCH;
 
 	/* Create public keys */
-	c25519_smult(q1, c25519_base_x, m1);
-	c25519_smult(q2, c25519_base_x, m2);
+	c25519_smult(q1, c25519_base_x, e1);
+	c25519_smult(q2, c25519_base_x, e2);
 	morph25519_mx2e(ex1, ey1, q1, PARITY_BIT);
 	morph25519_mx2e(ex2, ey2, q2, PARITY_BIT);
 
@@ -219,8 +219,8 @@ int tbench_dh_ed_to_mt(TBENCH_ARGS)
 	morph25519_ey2mx(qm1, ey1);
 	morph25519_ey2mx(qm2, ey2);
 
-	c25519_smult(r1, qm2, m1);
-	c25519_smult(r2, qm1, m2);
+	c25519_smult(r1, qm2, e1);
+	c25519_smult(r2, qm1, e2);
 
 	morph25519_mx2e(mx1, my1, r1, PARITY_BIT);
 	morph25519_mx2e(mx2, my2, r2, PARITY_BIT);
@@ -259,10 +259,10 @@ int tbench_dh_ed_to_mt_xy(TBENCH_ARGS)
 
 	/* Diffie-Hellman exchange */
 	morph25519_e2m(mx1, my1, ex1, ey1);
-	morph25519_e2m(mx2, my2, ey1, ey2);
+	morph25519_e2m(mx2, my2, ex2, ey2);
 
 	c25519_smult_xy(rx1, ry1, mx2, my2, e1);
-	c25519_smult_xy(rx2, ry2, mx1, mx2, e2);
+	c25519_smult_xy(rx2, ry2, mx1, my1, e2);
 
 	morph25519_m2e(mx1, my1, rx1, ry1);
 	morph25519_m2e(mx2, my2, rx2, ry2);
@@ -356,9 +356,9 @@ int tbench_dh_wei_to_mt_xy(TBENCH_ARGS)
 	/* Diffie-Hellman exchange */
 
 	morph25519_w2m(mx1, my1, wx1, wy1);
-	morph25519_w2m(my1, my2, wx2, wy2);
+	morph25519_w2m(mx2, my2, wx2, wy2);
 	c25519_smult_xy(rx1, ry1, mx2, my2, e1);
-	c25519_smult_xy(rx2, ry2, mx1, mx2, e2);
+	c25519_smult_xy(rx2, ry2, mx1, my1, e2);
 	morph25519_m2w(mx1, my1, rx1, ry1);
 	morph25519_m2w(mx2, my2, rx2, ry2);
 
